@@ -218,6 +218,10 @@ def reflexo_rapido(msg):
         return baixar_imagem_busca(tema or resto, ext)
     if "musica" in m and "organiza" in m: return organizar_musicas()
     if m.startswith("yen organiza"): return organizar_pasta(os.path.expanduser("~/Downloads") if "download" in m else DESPEJO_DIR)
+    if "limpa ram" in m or "limpar ram" in m:
+        antes = raio_x_pc()
+        os.system("sync && echo 1 | sudo tee /proc/sys/vm/drop_caches >/dev/null")
+        return f"Cache limpo! Antes: {antes} | Agora: {raio_x_pc()}"
     if m in ["yen status", "status pc", "raio x"]: return raio_x_pc()
     if m.startswith("yen cria "):
         nome = raw[9:].strip().replace("..", "")

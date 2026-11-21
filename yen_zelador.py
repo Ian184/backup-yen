@@ -24,6 +24,14 @@ def mover_seguro(src, dest_dir):
         dst = os.path.join(dest_dir, f"{b}_{int(time.time())}{e}")
     shutil.move(src, dst)
 
+ULTIMA_RAM = 0
+def vigiar_ram():
+    global ULTIMA_RAM
+    t, d = [int(x) for x in open("/proc/meminfo").read().split() if x.isdigit()][:2]
+    if (t - d) / t > 0.85 and time.time() - ULTIMA_RAM > 600:
+        os.system("sync && echo 1 | sudo tee /proc/sys/vm/drop_caches >/dev/null")
+        ULTIMA_RAM = time.time()
+
 def varrer():
     for pasta in ORIGENS:
         if not os.path.exists(pasta): continue
@@ -43,6 +51,6 @@ def varrer():
                     mover_seguro(fp, dest); break
 
 while True:
-    try: varrer()
+    try: varrer(); vigiar_ram()
     except Exception: pass
     time.sleep(5)
