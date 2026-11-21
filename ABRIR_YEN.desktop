@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=ABRIR YEN (Completo / Bolso)
+Comment=Inicia o Yen offline direto do pendrive
+Exec=bash -c 'DIR="$(dirname "%k")"; python3 "$DIR/yen.py"'
+Icon=utilities-terminal
+Terminal=false
+Categories=Utility;

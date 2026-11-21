@@ -1,0 +1,12 @@
+1_Memoria/chave_api.txt
+1_Memoria/memorias_salvas.txt
+1_Memoria/historico_recente.txt
+2_Arquivo_de_Despejo/*
+cerebro/*.gguf
+bin32/*
+bin64/*
+*.bak
+__pycache__/
+
+.Trash-1000/
+lost+found/
