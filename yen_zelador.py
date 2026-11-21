@@ -2,16 +2,20 @@
 import os, time, shutil, re
 
 BASE = os.path.dirname(os.path.abspath(__file__))
-DESPEJO = os.path.join(BASE, "2_Arquivo_de_Despejo")
 HOME = os.path.expanduser("~")
+ORIGENS = [os.path.join(HOME, p) for p in ["Downloads", "Área de trabalho", "Desktop", "Imagens", "Vídeos", "Documentos", "Músicas"]] + [os.path.join(BASE, "2_Arquivo_de_Despejo")]
 MAPA = {
-    os.path.join(HOME, "Imagens"): {".jpg", ".jpeg", ".png", ".webp", ".gif", ".svg"},
-    os.path.join(HOME, "Vídeos"): {".mp4", ".mkv", ".webm", ".avi", ".mov"},
-    os.path.join(HOME, "Documentos"): {".pdf", ".docx", ".doc", ".xlsx", ".pptx", ".txt", ".md", ".epub"},
-    os.path.join(HOME, "Downloads", "Jogos_e_Apps"): {".zip", ".rar", ".7z", ".tar", ".gz", ".deb", ".appimage", ".exe", ".iso", ".sh"}
+    os.path.join(HOME, "Imagens", "JPG"): {".jpg", ".jpeg"},
+    os.path.join(HOME, "Imagens", "PNG"): {".png", ".webp", ".svg"},
+    os.path.join(HOME, "Imagens", "GIF"): {".gif"},
+    os.path.join(HOME, "Vídeos", "MP4"): {".mp4", ".mov"},
+    os.path.join(HOME, "Vídeos", "Outros_Videos"): {".mkv", ".webm", ".avi"},
+    os.path.join(HOME, "Documentos", "PDF"): {".pdf"},
+    os.path.join(HOME, "Documentos", "Textos_e_Planilhas"): {".docx", ".doc", ".xlsx", ".csv", ".ods", ".pptx", ".txt", ".md", ".epub"},
 }
 
 def mover_seguro(src, dest_dir):
+    if os.path.dirname(src) == dest_dir: return
     os.makedirs(dest_dir, exist_ok=True)
     nome = os.path.basename(src)
     dst = os.path.join(dest_dir, nome)
@@ -21,7 +25,7 @@ def mover_seguro(src, dest_dir):
     shutil.move(src, dst)
 
 def varrer():
-    for pasta in [os.path.join(HOME, "Downloads"), DESPEJO, os.path.join(HOME, "Músicas")]:
+    for pasta in ORIGENS:
         if not os.path.exists(pasta): continue
         for f in os.listdir(pasta):
             fp = os.path.join(pasta, f)
