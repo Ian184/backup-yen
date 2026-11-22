@@ -1,13 +1,13 @@
-# YEN — Assistente Pessoal Portátil para Linux
+# YEN — Assistente Pessoal Portátil (Linux & Windows 10/11)
 
-Assistente inteligente portátil escrito em Python + Tkinter, projetado para rodar direto de um pendrive ou em hardware modesto (4 GB RAM / Linux XFCE) com arquitetura híbrida (API Online + modelo local GGUF offline).
+Assistente inteligente portátil em Python + Tkinter feito para rodar direto de um pendrive ou em PCs modestos (4 GB RAM), com arquitetura híbrida (API Online + modelo local GGUF offline) e zelador automático de arquivos.
 
-## Recursos Principais
-- **Modo Bolso & Modo Completo:** janela flutuante compacta no canto da tela ou painel completo com execução de comandos Linux e barra de progresso.
-- **Zelador Autônomo:** diagnóstico instantâneo de RAM/CPU/disco e organização automática de arquivos (`.jpg`, `.png`, `.mp3`, `.mp4`, `.pdf`) e bibliotecas de música por artista.
-- **Memória Persistente & Habilidades (`3_Habilidades/`):** mantém contexto entre sessões e permite criar scripts modulares sob demanda.
-- **Motor Híbrido:** alterna automaticamente para inferência local via `llama.cpp` (`yen-server` + `.gguf`) quando não há conexão com a internet.
+## O que você precisa para rodar
+- **Python 3** instalado (no Linux já vem instalado; no Windows, baixe em [python.org](https://python.org) marcando *"Add Python to PATH"*).
+- **Para modo Online:** uma chave gratuita do Google Gemini AI Studio colada em `1_Memoria/chave_api.txt` (o arquivo é criado automaticamente ao abrir pela primeira vez).
+- **Para modo Offline (Opcional):** coloque qualquer modelo `.gguf` renomeado para `yen-completo.gguf` dentro de `cerebro/` e o executável `llama-server` dentro de `bin64/` (Linux) ou `bin_win/yen-server.exe` (Windows).
 
-## Como Usar
-1. Adicione sua chave de API em `1_Memoria/chave_api.txt` (opcional se usar apenas o modelo local `.gguf` em `cerebro/`).
-2. Execute `python3 yen.py` ou dê dois cliques em `ABRIR_YEN.desktop`.
+## Como Iniciar
+- **Linux:** dê dois cliques em `ABRIR_YEN.desktop` ou rode `python3 yen.py`.
+- **Windows 10 / 11:** dê dois cliques em `ABRIR_YEN.bat`.
+- **Zelador em Tempo Real (Opcional):** execute `python3 yen_zelador.py` para organizar automaticamente `Downloads`, `Imagens`, `Vídeos`, `Documentos` e `Músicas` por artista em segundo plano.
