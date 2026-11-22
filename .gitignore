@@ -10,3 +10,4 @@ __pycache__/
 
 .Trash-1000/
 lost+found/
+bin_win/*

@@ -34,8 +34,15 @@ def comando_seguro(cmd):
     return True, ""
 
 def raio_x_pc():
-    t, d = [int(x) for x in open("/proc/meminfo").read().split() if x.isdigit()][:2]
     _, _, l = shutil.disk_usage(BASE_DIR)
+    if os.name == "nt":
+        import ctypes
+        class M(ctypes.Structure):
+            _fields_ = [("l",ctypes.c_ulong),("m",ctypes.c_ulong),("tp",ctypes.c_ulonglong),("ap",ctypes.c_ulonglong),("tf",ctypes.c_ulonglong),("af",ctypes.c_ulonglong),("tv",ctypes.c_ulonglong),("av",ctypes.c_ulonglong),("aev",ctypes.c_ulonglong)]
+        s = M(); s.l = ctypes.sizeof(s); ctypes.windll.kernel32.GlobalMemoryStatusEx(ctypes.byref(s))
+        return f"RAM: {int((s.tp-s.ap)/(1024**2))}/{int(s.tp/(1024**2))}MB | Pendrive: {round(l/(1024**3),1)}GB livres"
+    if os.name == "nt": return f"Sistema Windows | Pendrive: {round(l/(1024**3),1)}GB livres"
+    t, d = [int(x) for x in open("/proc/meminfo").read().split() if x.isdigit()][:2]
     return f"RAM: {int((t-d)/1024)}/{int(t/1024)}MB | Pendrive: {round(l/(1024**3),1)}GB livres"
 
 def organizar_pasta(alvo):
@@ -255,7 +262,7 @@ def reflexo_rapido(msg):
         if "audacious" in ab: return "Audacious já tá aberto."
         subprocess.Popen("audacious", shell=True); return "Abrindo o Audacious."
     if ("despejo" in m or "pendrive" in m) and any(v in m for v in ["abre", "abrir", "abra", "mostra"]):
-        subprocess.Popen(f"xdg-open '{DESPEJO_DIR}'", shell=True); return "Abrindo 2_Arquivo_de_Despejo."
+        os.startfile(DESPEJO_DIR) if os.name == "nt" else subprocess.Popen(f"xdg-open '{DESPEJO_DIR}'", shell=True); return "Abrindo 2_Arquivo_de_Despejo."
     if "conecta note" in m:
         sc = os.path.expanduser("~/.local/bin/conectar-note.sh")
         if os.path.exists(sc): subprocess.Popen(f"bash '{sc}'", shell=True); return "Conectando mouse/teclado com o Notebook!"
@@ -272,7 +279,7 @@ def carregar_memoria():
     return "\n\n".join(mems)[:4000]
 
 def perguntar_offline(sys_msg, user_input):
-    srv, mod = os.path.join(BASE_DIR, "bin64", "yen-server"), os.path.join(BASE_DIR, "cerebro", "yen-completo.gguf")
+    srv, mod = os.path.join(BASE_DIR, "bin_win", "yen-server.exe") if os.name == "nt" else os.path.join(BASE_DIR, "bin64", "yen-server"), os.path.join(BASE_DIR, "cerebro", "yen-completo.gguf")
     if not (os.path.exists(srv) and os.path.exists(mod)): return "[Offline sem modelo local]"
     subprocess.Popen([srv, "-m", mod, "--port", "8089", "--host", "127.0.0.1", "-t", "4", "-c", "2048", "--no-mmap"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     for _ in range(20):
@@ -327,12 +334,12 @@ def corrigir_comando_ia(cmd_falho, erro_log):
         res = json.loads(out)
         cand = next(iter(res["candidates"]))
         part = next(iter(cand["content"]["parts"]))
-        blocos = re.findall(r"```bash\n(.*?)\n```", part["text"], re.DOTALL)
+        blocos = re.findall(r"```(?:bash|powershell|cmd)\n(.*?)\n```", part["text"], re.DOTALL)
         return next(iter(blocos)).strip() if blocos else ""
     except Exception: return ""
 
 def executar_com_progresso(resposta, log_fn, prog_fn):
-    for b in re.findall(r"```bash\n(.*?)\n```", resposta, re.DOTALL):
+    for b in re.findall(r"```(?:bash|powershell|cmd)\n(.*?)\n```", resposta, re.DOTALL):
         cmd = b.strip()
         if not cmd: continue
         for tentativa in range(2):

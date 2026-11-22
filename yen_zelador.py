@@ -26,6 +26,7 @@ def mover_seguro(src, dest_dir):
 
 ULTIMA_RAM = 0
 def vigiar_ram():
+    if os.name == 'nt': return
     global ULTIMA_RAM
     t, d = [int(x) for x in open("/proc/meminfo").read().split() if x.isdigit()][:2]
     if (t - d) / t > 0.85 and time.time() - ULTIMA_RAM > 600:
